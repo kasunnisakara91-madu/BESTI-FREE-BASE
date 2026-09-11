@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>🌸 BESTI-MINI 🌸| DCT</title>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#000;
+    color:#00ff66;
+    font-family:'Share Tech Mono',monospace;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+/* CRT SCANLINES */
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:9999;
+
+    background:
+    repeating-linear-gradient(
+        to bottom,
+        rgba(0,255,80,.025) 0px,
+        rgba(0,255,80,.025) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+}
+
+/* GRID */
+
+body:after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-1;
+
+    background-image:
+    linear-gradient(rgba(0,255,80,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,80,.035) 1px,transparent 1px);
+
+    background-size:35px 35px;
+}
+
+/* MAIN */
+
+.container{
+    width:92%;
+    max-width:1100px;
+    margin:auto;
+    padding:30px 0 50px;
+}
+
+/* TERMINAL TOP */
+
+.terminal-top{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+
+    border-bottom:1px solid #00ff66;
+    padding:10px 5px 15px;
+
+    text-shadow:0 0 10px #00ff66;
+
+    font-size:13px;
+    line-height:1.7;
+}
+
+.right-info{
+    text-align:right;
+}
+
+/* LOGO */
+
+.logo{
+    text-align:center;
+    padding:35px 10px 25px;
+}
+
+.logo h1{
+    font-size:clamp(34px,8vw,75px);
+    letter-spacing:8px;
+
+    text-shadow:
+        0 0 5px #00ff66,
+        0 0 15px #00ff66,
+        0 0 35px #00ff66;
+
+    animation:glitch 3s infinite;
+}
+
+.logo h2{
+    margin-top:15px;
+    font-size:clamp(14px,3vw,22px);
+    letter-spacing:4px;
+}
+
+.logo p{
+    margin-top:18px;
+    font-size:14px;
+    color:#00cc55;
+}
+
+@keyframes glitch{
+
+    0%,90%,100%{
+        transform:none;
+    }
+
+    92%{
+        transform:translateX(3px);
+    }
+
+    94%{
+        transform:translateX(-3px);
+    }
+
+    96%{
+        transform:translateX(2px);
+    }
+}
+
+/* MAIN BOX */
+
+.main-box{
+
+    border:2px solid #00ff66;
+    border-radius:20px;
+
+    padding:25px;
+
+    box-shadow:
+        0 0 10px #00ff66,
+        0 0 35px rgba(0,255,100,.3),
+        inset 0 0 35px rgba(0,255,100,.05);
+
+    background:rgba(0,20,8,.35);
+}
+
+/* SECTION TITLE */
+
+.section-title{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.section-title span{
+    display:inline-block;
+
+    border:1px solid #00ff66;
+    padding:8px 20px;
+
+    box-shadow:
+        0 0 12px rgba(0,255,100,.5);
+
+    text-shadow:0 0 10px #00ff66;
+}
+
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+}
+
+/* CARD */
+
+.card{
+
+    position:relative;
+
+    border:1px solid #00ff66;
+    border-radius:15px;
+
+    padding:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,255,100,.055),
+            rgba(0,0,0,.85)
+        );
+
+    box-shadow:
+        0 0 8px rgba(0,255,100,.35),
+        inset 0 0 20px rgba(0,255,100,.025);
+
+    transition:.3s;
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:
+        0 0 12px #00ff66,
+        0 0 35px rgba(0,255,100,.35),
+        inset 0 0 25px rgba(0,255,100,.06);
+}
+
+/* CARD TOP */
+
+.card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.number{
+    color:#00ff66;
+}
+
+.online{
+
+    font-size:11px;
+
+    border:1px solid #00ff66;
+    border-radius:20px;
+
+    padding:5px 9px;
+
+    box-shadow:0 0 8px rgba(0,255,100,.5);
+}
+
+.online i{
+    display:inline-block;
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#00ff66;
+
+    box-shadow:0 0 8px #00ff66;
+
+    margin-right:5px;
+}
+
+/* ICON */
+
+.icon{
+
+    height:65px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:45px;
+
+    text-shadow:
+        0 0 8px #00ff66,
+        0 0 20px #00ff66;
+}
+
+/* TITLE */
+
+.card h3{
+
+    text-align:center;
+
+    margin:18px 0 12px;
+
+    font-size:20px;
+
+    text-shadow:
+        0 0 7px #00ff66;
+}
+
+/* LINE */
+
+.line{
+
+    height:1px;
+
+    background:#00ff66;
+
+    box-shadow:0 0 8px #00ff66;
+
+    margin-bottom:15px;
+}
+
+/* DESCRIPTION */
+
+.description{
+
+    text-align:center;
+
+    color:#00d957;
+
+    font-size:13px;
+
+    line-height:1.7;
+
+    min-height:65px;
+}
+
+/* DOWNLOAD */
+
+.download{
+
+    display:block;
+
+    margin-top:20px;
+
+    padding:13px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:#00ff66;
+
+    border:2px solid #00ff66;
+
+    border-radius:8px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    box-shadow:
+        0 0 8px rgba(0,255,100,.5),
+        inset 0 0 8px rgba(0,255,100,.05);
+
+    transition:.25s;
+}
+
+.download:hover{
+
+    color:#000;
+
+    background:#00ff66;
+
+    box-shadow:
+        0 0 12px #00ff66,
+        0 0 30px #00ff66;
+}
+
+/* FILE INFO */
+
+.file-info{
+
+    text-align:center;
+
+    margin-top:13px;
+
+    font-size:11px;
+
+    color:#00993f;
+}
+
+/* FEATURES */
+
+.features{
+
+    margin-top:25px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit,minmax(180px,1fr));
+
+    border:1px solid #00ff66;
+
+    border-radius:10px;
+
+    overflow:hidden;
+}
+
+.feature{
+
+    padding:17px;
+
+    text-align:center;
+
+    border-right:1px solid #00ff66;
+
+    color:#00dd59;
+
+    font-size:13px;
+}
+
+.feature:last-child{
+    border-right:0;
+}
+
+/* DISCLAIMER */
+
+.disclaimer{
+
+    margin-top:25px;
+
+    border:1px solid #00ff66;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    text-align:center;
+
+    color:#00cc55;
+
+    line-height:1.8;
+
+    box-shadow:
+        0 0 15px rgba(0,255,100,.15);
+}
+
+.disclaimer-title{
+
+    display:inline-block;
+
+    margin-bottom:10px;
+
+    color:#00ff66;
+
+    font-size:17px;
+
+    text-shadow:0 0 8px #00ff66;
+}
+
+/* FOOTER */
+
+footer{
+
+    text-align:center;
+
+    margin-top:30px;
+
+    padding-top:20px;
+
+    border-top:1px solid #006622;
+
+    color:#008f3a;
+
+    font-size:12px;
+
+    line-height:2;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .container{
+        width:94%;
+        padding-top:18px;
+    }
+
+    .terminal-top{
+        font-size:10px;
+    }
+
+    .right-info{
+        display:none;
+    }
+
+    .logo{
+        padding:30px 5px 25px;
+    }
+
+    .logo h1{
+        letter-spacing:4px;
+    }
+
+    .main-box{
+        padding:15px;
+        border-radius:15px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .card{
+        padding:20px;
+    }
+
+    .features{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .feature{
+        border-bottom:1px solid #00ff66;
+    }
+
+    .feature:nth-child(2){
+        border-right:0;
+    }
+
+    .feature:nth-child(3),
+    .feature:nth-child(4){
+        border-bottom:0;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+<!-- TERMINAL HEADER -->
+
+<div class="terminal-top">
+
+<div>
+[~] USER : Developer<br>
+[~] STATUS : <b>ONLINE</b><br>
+[~] SYSTEM : Bot Sources<br>
+[~] TIME : 2026
+</div>
+
+<div class="right-info">
+&gt; WhatsApp Bot Base<br>
+&gt; Download Center<br>
+&gt; Build Your Own Bot
+</div>
+
+</div>
+
+
+<!-- LOGO -->
+
+<div class="logo">
+
+<h1>BOT SOURCES</h1>
+
+<h2>[ WHATSAPP BOT BASE COLLECTION ]</h2>
+
+<p>
+DOWNLOAD &nbsp; • &nbsp;
+CUSTOMIZE &nbsp; • &nbsp;
+LEARN &nbsp; • &nbsp;
+BUILD
+</p>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="main-box">
+
+
+<div class="section-title">
+<span>[ AVAILABLE SOURCES ]</span>
+</div>
+
+
+<div class="grid">
+
+
+<!-- 01 -->
+
+<div class="card">
+
+<div class="card-top">
+
+<span class="number">
+[ 01 ]
+</span>
+
+<span class="online">
+<i></i> ONLINE
+</span>
+
+</div>
+
+<div class="icon">
+&lt;/&gt;
+</div>
+
+<h3>
+FREE BOT BASE (01)
+</h3>
+
+<div class="line"></div>
+
+<div class="description">
+WhatsApp bot source code
+for learning, editing and
+customization.
+</div>
+
+<a
+class="download"
+target="_blank"
+href="https://www.mediafire.com/file/z7louavuplskedg/%25F0%259D%2590%2585%CA%80%25E1%25B4%87%25E1%25B4%87_%25CA%2599%25E1%25B4%258F%25E1%25B4%259B_%25CA%2599%25E1%25B4%2580%25EA%259C%25B1%25E1%25B4%2587_.zip/file">
+
+&gt;&gt; DOWNLOAD
+
+</a>
+
+<div class="file-info">
+[ ZIP ] &nbsp; | &nbsp; MediaFire
+</div>
+
+</div>
+
+
+<!-- 02 -->
+
+<div class="card">
+
+<div class="card-top">
+
+<span class="number">
+[ 02 ]
+</span>
+
+<span class="online">
+<i></i> ONLINE
+</span>
+
+</div>
+
+<div class="icon">
+◉
+</div>
+
+<h3>
+FREE BOT BASE (02)
+</h3>
+
+<div class="line"></div>
+
+<div class="description">
+HASHAN-MD V1 WhatsApp
+bot source ready for
+customization.
+</div>
+
+<a
+class="download"
+target="_blank"
+href="https://www.mediafire.com/file/yl093ua1arry4ha/HASHAN-MD-V1-main.zip/file">
+
+&gt;&gt; DOWNLOAD
+
+</a>
+
+<div class="file-info">
+[ ZIP ] &nbsp; | &nbsp; MediaFire
+</div>
+
+</div>
+
+
+<!-- 03 -->
+
+<div class="card">
+
+<div class="card-top">
+
+<span class="number">
+[ 03 ]
+</span>
+
+<span class="online">
+<i></i> ONLINE
+</span>
+
+</div>
+
+<div class="icon">
+♞
+</div>
+
+<h3>
+FREE BOT BASE (03)
+</h3>
+
+<div class="line"></div>
+
+<div class="description">
+Lightweight KnightBot
+Mini source for WhatsApp
+bot projects.
+</div>
+
+<a
+class="download"
+target="_blank"
+href="https://www.mediafire.com/file/otus2ivnmre8jnx/KnightBot-Mini-main.zip/file">
+
+&gt;&gt; DOWNLOAD
+
+</a>
+
+<div class="file-info">
+[ ZIP ] &nbsp; | &nbsp; MediaFire
+</div>
+
+</div>
+
+
+<!-- 04 -->
+
+<div class="card">
+
+<div class="card-top">
+
+<span class="number">
+[ 04 ]
+</span>
+
+<span class="online">
+<i></i> ONLINE
+</span>
+
+</div>
+
+<div class="icon">
+X
+</div>
+
+<h3>
+FREE BOT BASE (04)
+</h3>
+
+<div class="line"></div>
+
+<div class="description">
+SINETH-X MD bot source
+for building and
+customizing your bot.
+</div>
+
+<a
+class="download"
+target="_blank"
+href="https://www.mediafire.com/file/ro03oozk9f0bvo8/SINETH-X-MD-main.zip/file">
+
+&gt;&gt; DOWNLOAD
+
+</a>
+
+<div class="file-info">
+[ ZIP ] &nbsp; | &nbsp; MediaFire
+</div>
+
+</div>
+
+
+<!-- 05 -->
+
+<div class="card">
+
+<div class="card-top">
+
+<span class="number">
+[ 05 ]
+</span>
+
+<span class="online">
+<i></i> ONLINE
+</span>
+
+</div>
+
+<div class="icon">
+☠
+</div>
+
+<h3>
+FREE BOT BASE (05)
+</h3>
+
+<div class="line"></div>
+
+<div class="description">
+ALONE-X MD WhatsApp
+bot source for developers
+and creators.
+</div>
+
+<a
+class="download"
+target="_blank"
+href="https://www.mediafire.com/file/mx63tpu8om439tn/alone-x-md-main_%252820%2529.zip/file">
+
+&gt;&gt; DOWNLOAD
+
+</a>
+
+<div class="file-info">
+[ ZIP ] &nbsp; | &nbsp; MediaFire
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- FEATURES -->
+
+<div class="features">
+
+<div class="feature">
+&lt;/&gt;<br>
+BEGINNER FRIENDLY
+</div>
+
+<div class="feature">
+⚙<br>
+EASY TO CUSTOMIZE
+</div>
+
+<div class="feature">
+▣<br>
+MULTIPLE BOT BASES
+</div>
+
+<div class="feature">
+&gt;_<br>
+BUILD YOUR OWN BOT
+</div>
+
+</div>
+
+
+<!-- DISCLAIMER -->
+
+<div class="disclaimer">
+
+<div class="disclaimer-title">
+⚠ [ DISCLAIMER ]
+</div>
+
+<br>
+
+මේ projects වල original
+developers / creators හට
+අදාළ credits ලබාදෙන්න.
+
+<br>
+
+Source code භාවිතා කිරීමට පෙර
+එහි license සහ terms පරීක්ෂා කරන්න.
+
+</div>
+
+
+</div>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+&gt; SYSTEM : BOT SOURCES ONLINE<br>
+
+&gt; CONNECTION : SECURE<br>
+
+&gt; GOOD LUCK • KEEP CODING • BUILD YOUR DREAM
+
+<br><br>
+
+© 2026 FREE BOT BASE
+&nbsp; | &nbsp;
+DOWNLOAD CENTER
+
+</footer>
+
+
+</div>
+
+</body>
+  </html>
