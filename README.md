@@ -1,2 +1,0 @@
-# NOVIX-MD
-NOVIX-MD
