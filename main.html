@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NOVIX MD DCT</title>
+
+<style>
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Courier New", monospace;
+    background: #000;
+    color: #20ff62;
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   BACKGROUND
+========================= */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.50),
+            rgba(0,0,0,0.78)
+        ),
+        url("bg.jpg")
+        center center /
+        cover
+        no-repeat;
+
+    z-index: -3;
+}
+
+
+/* =========================
+   SCANLINES
+========================= */
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: -2;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0,255,80,0.035) 0px,
+            rgba(0,255,80,0.035) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+
+/* =========================
+   GLOW
+========================= */
+
+.glow {
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: -1;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(0,255,70,0.14),
+            transparent 58%
+        );
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    width: 100%;
+    text-align: center;
+
+    padding: 35px 15px 20px;
+}
+
+.glitch {
+    font-size: clamp(30px, 7vw, 60px);
+
+    font-weight: bold;
+
+    color: #20ff62;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        3px 0 #ff1744,
+        -3px 0 #00e5ff,
+        0 0 12px #00ff55;
+
+    animation: flicker 3s infinite;
+}
+
+
+.dct {
+    margin-top: 5px;
+
+    font-size: clamp(28px, 6vw, 48px);
+
+    font-weight: bold;
+
+    color: #20ff62;
+
+    text-shadow:
+        3px 0 #ff1744,
+        -3px 0 #00e5ff,
+        0 0 12px #00ff55;
+}
+
+
+.subtitle {
+    margin-top: 12px;
+
+    font-size: clamp(16px, 4vw, 25px);
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 10px #00ff55;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: min(92%, 650px);
+
+    margin: 30px auto 70px;
+}
+
+
+/* =========================
+   MAIN CARD
+========================= */
+
+.card {
+    background:
+        rgba(0,0,0,0.80);
+
+    border:
+        2px solid #20ff62;
+
+    border-radius:
+        30px;
+
+    padding:
+        40px 22px 50px;
+
+    box-shadow:
+        0 0 12px #00ff55,
+        0 0 45px rgba(0,255,80,0.45),
+        inset 0 0 30px rgba(0,255,80,0.05);
+
+    backdrop-filter:
+        blur(3px);
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+.title {
+    text-align: center;
+
+    font-size:
+        clamp(27px, 7vw, 47px);
+
+    line-height:
+        1.2;
+
+    color:
+        #20ff62;
+
+    text-shadow:
+        3px 0 #ff1744,
+        -3px 0 #00e5ff,
+        0 0 12px #00ff55;
+
+    margin-bottom:
+        25px;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+    width: 92%;
+
+    margin:
+        auto auto 30px;
+
+    font-size:
+        clamp(15px, 4vw, 21px);
+
+    line-height:
+        1.8;
+
+    letter-spacing:
+        1px;
+}
+
+.online {
+    color:
+        #20ff62;
+
+    text-shadow:
+        0 0 10px #00ff55;
+}
+
+
+/* =========================
+   BOT BOX AREA
+========================= */
+
+.bot-boxes {
+    width: 100%;
+
+    margin-top:
+        20px;
+}
+
+
+/* =========================
+   BOT BOX
+========================= */
+
+.bot-box {
+    width: 95%;
+
+    margin:
+        22px auto;
+
+    padding:
+        25px 18px;
+
+    background:
+        rgba(0,0,0,0.65);
+
+    border:
+        2px solid #20ff62;
+
+    border-radius:
+        18px;
+
+    text-align:
+        center;
+
+    box-shadow:
+        0 0 10px #00ff55,
+        inset 0 0 18px rgba(0,255,80,0.08);
+
+    transition:
+        0.25s;
+}
+
+
+.bot-box:hover {
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 0 18px #00ff55,
+        0 0 35px rgba(0,255,80,0.3);
+}
+
+
+/* BOT TITLE */
+
+.bot-box h2 {
+    color:
+        #20ff62;
+
+    font-size:
+        clamp(20px, 5vw, 27px);
+
+    margin-bottom:
+        16px;
+
+    text-shadow:
+        2px 0 #ff1744,
+        -2px 0 #00e5ff;
+}
+
+
+/* BOT STATUS */
+
+.bot-status {
+    font-size:
+        16px;
+
+    margin-bottom:
+        20px;
+}
+
+.ready {
+    color:
+        #20ff62;
+
+    text-shadow:
+        0 0 10px #00ff55;
+}
+
+
+/* =========================
+   DEPLOY BUTTON
+========================= */
+
+.deploy-btn {
+    display:
+        block;
+
+    width:
+        100%;
+
+    padding:
+        15px 10px;
+
+    text-decoration:
+        none;
+
+    color:
+        #20ff62;
+
+    background:
+        rgba(0,0,0,0.55);
+
+    border:
+        2px solid #20ff62;
+
+    border-radius:
+        9px;
+
+    font-family:
+        "Courier New", monospace;
+
+    font-size:
+        clamp(15px, 4vw, 20px);
+
+    letter-spacing:
+        1px;
+
+    transition:
+        0.25s;
+}
+
+
+.deploy-btn:hover {
+    background:
+        #20ff62;
+
+    color:
+        #000;
+
+    box-shadow:
+        0 0 15px #00ff55,
+        0 0 30px #00ff55;
+
+    transform:
+        scale(1.02);
+}
+
+
+.deploy-btn:active {
+    transform:
+        scale(0.97);
+}
+
+
+/* =========================
+   GENDER
+========================= */
+
+.gender-box {
+    text-align:
+        center;
+
+    margin-top:
+        35px;
+}
+
+
+.gender-title {
+    font-size:
+        clamp(18px, 4vw, 24px);
+
+    margin-bottom:
+        15px;
+}
+
+
+.gender-box label {
+    font-size:
+        clamp(16px, 4vw, 22px);
+
+    margin:
+        0 8px;
+
+    cursor:
+        pointer;
+}
+
+
+.gender-box input {
+    width:
+        27px;
+
+    height:
+        27px;
+
+    vertical-align:
+        middle;
+
+    margin-right:
+        7px;
+
+    accent-color:
+        #20ff62;
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+#message {
+    min-height:
+        25px;
+
+    margin-top:
+        25px;
+
+    text-align:
+        center;
+
+    font-size:
+        16px;
+
+    color:
+        #20ff62;
+
+    text-shadow:
+        0 0 10px #00ff55;
+}
+
+
+/* =========================
+   FLICKER
+========================= */
+
+@keyframes flicker {
+
+    0%,
+    18%,
+    20%,
+    22%,
+    64%,
+    66%,
+    100% {
+        opacity: 1;
+    }
+
+    19%,
+    21%,
+    65% {
+        opacity: 0.65;
+    }
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width:480px) {
+
+    header {
+        padding-top:
+            25px;
+    }
+
+    .card {
+        padding:
+            35px 14px 40px;
+
+        border-radius:
+            25px;
+    }
+
+    .container {
+        margin-top:
+            15px;
+    }
+
+    .status {
+        width:
+            96%;
+    }
+
+    .bot-box {
+        width:
+            97%;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="glow"></div>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header>
+
+    <div class="glitch">
+         NOVIX MD 
+    </div>
+
+    <div class="dct">
+        DCT
+    </div>
+
+    <div class="subtitle">
+         NOVIX MD DCT 
+    </div>
+
+</header>
+
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+    <div class="card">
+
+
+        <div class="title">
+             NOVIX MD DCT
+        </div>
+
+
+        <div class="status">
+
+            &gt; SYSTEM STATUS:
+            <span class="online">
+                ONLINE
+            </span>
+
+            <br>
+
+            &gt; ACCESS LEVEL:
+            <span class="online">
+                ROOT
+            </span>
+
+        </div>
+
+
+
+        <!-- =========================
+             BOT BOXES
+        ========================= -->
+
+        <div class="bot-boxes">
+
+
+            <!-- BOT 01 -->
+
+            <div class="bot-box">
+
+                <h2>
+                    NOVIX MD BOT 01
+                </h2>
+
+                <div class="bot-status">
+
+                    &gt; BOT STATUS:
+                    <span class="ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+                <!-- CHANGE THIS LINK -->
+
+                <a
+                    href="https://YOUR-BOT-LINK-1.com"
+                    target="_blank"
+                    class="deploy-btn"
+                >
+
+                    &gt;&gt; DEPLOY BOT 01
+
+                </a>
+
+            </div>
+
+
+
+            <!-- BOT 02 -->
+
+            <div class="bot-box">
+
+                <h2>
+                    NOVIX MD BOT 02
+                </h2>
+
+                <div class="bot-status">
+
+                    &gt; BOT STATUS:
+                    <span class="ready">
+                        READY
+                    </span>
+
+                </div>
+
+
+                <!-- CHANGE THIS LINK -->
+
+                <a
+                    href="https://YOUR-BOT-LINK-2.com"
+                    target="_blank"
+                    class="deploy-btn"
+                >
+
+                    &gt;&gt; DEPLOY BOT 02
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+<script>
+
+
+</script>
+
+
+</body>
+</html>
