@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NOVIX MD DCT</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    font-family: Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+/* ================= BACKGROUND ================= */
+
+#backgroundImage {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: -10;
+    display: block;
+}
+
+/* Dark overlay - reduced so photo is clearly visible */
+.backgroundOverlay {
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.35),
+            rgba(0,0,0,0.48)
+        );
+    z-index: -9;
+    pointer-events: none;
+}
+
+/* Very light green atmosphere */
+.greenGlow {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(0,255,100,0.07),
+            transparent 60%
+        );
+    z-index: -8;
+    pointer-events: none;
+}
+
+/* ================= SCANLINES ================= */
+
+.scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        transparent 2px,
+        transparent 4px
+    );
+    pointer-events: none;
+    z-index: 20;
+}
+
+/* ================= FLOWER RAIN ================= */
+
+#flowerRain {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 15;
+}
+
+.flower {
+    position: absolute;
+    top: -70px;
+    left: 0;
+    width: var(--size);
+    height: var(--size);
+    opacity: var(--opacity);
+    transform: rotate(var(--rotate));
+    animation: flowerFall var(--duration) linear forwards;
+    filter: drop-shadow(0 0 5px rgba(255,80,180,0.35));
+}
+
+.flower::before,
+.flower::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+}
+
+.flower::before {
+    width: 45%;
+    height: 45%;
+    left: 27%;
+    top: 27%;
+    border-radius: 50%;
+    background: #ffd35c;
+    box-shadow:
+        0 -35% 0 5px var(--petal),
+        35% 0 0 5px var(--petal),
+        0 35% 0 5px var(--petal),
+        -35% 0 0 5px var(--petal);
+}
+
+.flower::after {
+    width: 42%;
+    height: 42%;
+    left: 29%;
+    top: 29%;
+    border-radius: 50%;
+    background: var(--petal);
+    transform: rotate(45deg);
+    opacity: 0.95;
+}
+
+@keyframes flowerFall {
+
+    0% {
+        transform:
+            translate3d(0, -80px, 0)
+            rotate(0deg);
+    }
+
+    20% {
+        transform:
+            translate3d(var(--wind1), 20vh, 0)
+            rotate(100deg);
+    }
+
+    40% {
+        transform:
+            translate3d(var(--wind2), 40vh, 0)
+            rotate(220deg);
+    }
+
+    60% {
+        transform:
+            translate3d(var(--wind3), 60vh, 0)
+            rotate(340deg);
+    }
+
+    80% {
+        transform:
+            translate3d(var(--wind4), 80vh, 0)
+            rotate(470deg);
+    }
+
+    100% {
+        transform:
+            translate3d(var(--wind5), 115vh, 0)
+            rotate(620deg);
+    }
+}
+
+/* ================= MAIN ================= */
+
+.container {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    min-height: 100vh;
+    padding: 25px 15px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ================= HEADER ================= */
+
+.header {
+    width: 100%;
+    max-width: 850px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.header h1 {
+    font-size: clamp(30px, 7vw, 65px);
+    letter-spacing: 4px;
+    color: #ffffff;
+    text-shadow:
+        0 0 10px rgba(0,255,100,0.45),
+        0 0 25px rgba(0,255,100,0.25);
+}
+
+.header .dct {
+    margin-top: 7px;
+    font-size: 15px;
+    letter-spacing: 7px;
+    color: #7cffae;
+}
+
+.headerLine {
+    width: 80%;
+    max-width: 600px;
+    height: 1px;
+    margin: 18px auto 0;
+    background: rgba(0,255,120,0.55);
+    box-shadow: 0 0 8px rgba(0,255,120,0.35);
+}
+
+/* ================= CARD ================= */
+
+.card {
+    width: 100%;
+    max-width: 850px;
+    padding: 25px;
+    border: 1px solid rgba(0,255,110,0.55);
+    border-radius: 20px;
+
+    background: rgba(0,0,0,0.58);
+
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    box-shadow:
+        0 0 20px rgba(0,255,100,0.10),
+        inset 0 0 25px rgba(0,255,100,0.025);
+}
+
+/* ================= STATUS ================= */
+
+.status {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 25px;
+
+    font-size: 14px;
+    color: #baffca;
+}
+
+.statusDot {
+    width: 9px;
+    height: 9px;
+    background: #35ff76;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #35ff76;
+    animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.35;
+    }
+}
+
+/* ================= BOT BOXES ================= */
+
+.botGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.botBox {
+    padding: 22px 18px;
+    border: 1px solid rgba(0,255,120,0.42);
+    border-radius: 15px;
+
+    background: rgba(0,0,0,0.45);
+
+    text-align: center;
+
+    transition: 0.3s ease;
+}
+
+.botBox:hover {
+    transform: translateY(-5px);
+    border-color: #54ff94;
+
+    box-shadow:
+        0 0 20px rgba(0,255,100,0.18);
+}
+
+.botBox h2 {
+    color: #fff;
+    font-size: 19px;
+    margin-bottom: 9px;
+}
+
+.botBox p {
+    color: #a5caae;
+    font-size: 13px;
+    margin-bottom: 17px;
+}
+
+.deployBtn {
+    display: inline-block;
+    padding: 11px 22px;
+
+    border: 1px solid #43ff82;
+    border-radius: 9px;
+
+    color: #8dffb0;
+    text-decoration: none;
+
+    font-weight: bold;
+    font-size: 13px;
+
+    transition: 0.3s ease;
+}
+
+.deployBtn:hover {
+    background: rgba(0,255,100,0.12);
+    color: white;
+    box-shadow: 0 0 15px rgba(0,255,100,0.3);
+}
+
+/* ================= GENDER ================= */
+
+.genderBox {
+    margin-top: 22px;
+    padding: 20px;
+
+    border: 1px solid rgba(0,255,120,0.28);
+    border-radius: 14px;
+
+    background: rgba(0,0,0,0.30);
+
+    text-align: center;
+}
+
+.genderBox h3 {
+    margin-bottom: 15px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.genderOptions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.genderOptions label {
+    cursor: pointer;
+    color: #c4e8cc;
+    font-size: 14px;
+}
+
+.genderOptions input {
+    margin-right: 6px;
+    accent-color: #39ff78;
+}
+
+/* ================= MESSAGE ================= */
+
+.message {
+    margin-top: 22px;
+    text-align: center;
+
+    color: #b7d8bf;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    margin-top: 22px;
+    text-align: center;
+    color: rgba(255,255,255,0.55);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 650px) {
+
+    .container {
+        padding: 18px 12px 40px;
+    }
+
+    .card {
+        padding: 18px 13px;
+        border-radius: 16px;
+    }
+
+    .botGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        letter-spacing: 2px;
+    }
+
+    .header .dct {
+        letter-spacing: 5px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =================================================
+     BACKGROUND PHOTO
+     Put your photo in the same folder and name it:
+     bg.jpg
+================================================== -->
+
+<img
+    id="backgroundImage"
+    src="./logopng.jpg"
+    alt="Background"
+>
+
+<div class="backgroundOverlay"></div>
+<div class="greenGlow"></div>
+
+<div class="scanlines"></div>
+
+<!-- FLOWER RAIN -->
+<div id="flowerRain"></div>
+
+<!-- MAIN -->
+<div class="container">
+
+    <div class="header">
+
+        <h1>I AM : ( NOVIX MD )</h1>
+
+        <div class="dct">
+            D C T
+        </div>
+
+        <div class="headerLine"></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="status">
+            <span class="statusDot"></span>
+            NOVIX MD DCT ONLINE
+        </div>
+
+
+        <div class="botGrid">
+
+            <!-- BOT 01 -->
+
+            <div class="botBox">
+
+                <h2>NOVIX MD BOT 01</h2>
+
+                <p>
+                    Deploy your WhatsApp Bot
+                </p>
+
+                <!-- CHANGE THIS LINK -->
+                <a
+                    class="deployBtn"
+                    href="https://YOUR-BOT-LINK-1.com"
+                    target="_blank"
+                >
+                    DEPLOY BOT 01
+                </a>
+
+            </div>
+
+
+            <!-- BOT 02 -->
+
+            <div class="botBox">
+
+                <h2>NOVIX MD BOT 02</h2>
+
+                <p>
+                    Deploy your second Bot
+                </p>
+
+                <!-- CHANGE THIS LINK -->
+                <a
+                    class="deployBtn"
+                    href="https://YOUR-BOT-LINK-2.com"
+                    target="_blank"
+                >
+                    DEPLOY BOT 02
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- GENDER -->
+
+        <div class="genderBox">
+
+            <h3>Select Your Gender</h3>
+
+            <div class="genderOptions">
+
+                <label>
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="male"
+                    >
+                    Male
+                </label>
+
+                <label>
+                    <input
+                        type="radio"
+                        name="gender"
+                        value="female"
+                    >
+                    Female
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="message">
+            Welcome to NOVIX MD DCT.
+            <br>
+            Fast • Powerful • Reliable
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        © 2026 NOVIX MD DCT
+    </div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   FLOWER RAIN
+===================================================== */
+
+const flowerRain = document.getElementById("flowerRain");
+
+const flowerColors = [
+    "#ff9dcc",
+    "#ffb7dc",
+    "#ff79b9",
+    "#ffd0e8",
+    "#f58bc5"
+];
+
+function createFlower(initial = false) {
+
+    const flower = document.createElement("div");
+
+    flower.className = "flower";
+
+    const size =
+        Math.random() * 16 + 10;
+
+    const duration =
+        Math.random() * 7 + 8;
+
+    const opacity =
+        Math.random() * 0.55 + 0.35;
+
+    const rotate =
+        Math.random() * 360;
+
+    const wind1 =
+        (Math.random() * 160 - 80) + "px";
+
+    const wind2 =
+        (Math.random() * 260 - 130) + "px";
+
+    const wind3 =
+        (Math.random() * 220 - 110) + "px";
+
+    const wind4 =
+        (Math.random() * 300 - 150) + "px";
+
+    const wind5 =
+        (Math.random() * 340 - 170) + "px";
+
+    flower.style.setProperty(
+        "--size",
+        size + "px"
+    );
+
+    flower.style.setProperty(
+        "--duration",
+        duration + "s"
+    );
+
+    flower.style.setProperty(
+        "--opacity",
+        opacity
+    );
+
+    flower.style.setProperty(
+        "--rotate",
+        rotate + "deg"
+    );
+
+    flower.style.setProperty(
+        "--petal",
+        flowerColors[
+            Math.floor(
+                Math.random() *
+                flowerColors.length
+            )
+        ]
+    );
+
+    flower.style.setProperty(
+        "--wind1",
+        wind1
+    );
+
+    flower.style.setProperty(
+        "--wind2",
+        wind2
+    );
+
+    flower.style.setProperty(
+        "--wind3",
+        wind3
+    );
+
+    flower.style.setProperty(
+        "--wind4",
+        wind4
+    );
+
+    flower.style.setProperty(
+        "--wind5",
+        wind5
+    );
+
+    flower.style.left =
+        Math.random() * 100 + "vw";
+
+    if (initial) {
+
+        flower.style.top =
+            Math.random() * 100 + "vh";
+
+    }
+
+    flowerRain.appendChild(flower);
+
+    setTimeout(() => {
+
+        flower.remove();
+
+    }, (duration + 1) * 1000);
+}
+
+
+/* Initial flowers */
+
+for (let i = 0; i < 55; i++) {
+    createFlower(true);
+}
+
+
+/* Continuous flowers */
+
+setInterval(() => {
+
+    createFlower(false);
+
+}, 190);
+
+</script>
+
+</body>
+</html>
